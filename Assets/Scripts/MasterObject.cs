@@ -7,17 +7,40 @@ public class MasterObject : MonoBehaviour
 
     public bool destruction = false;
     public GameObject[] Tetrominoes;
-    public Transform[,] grid = new Transform[10,20];
+
+    public float previousTime;
+    public float riseTime = 10f;
+
+    public bool incrementing = false;
+
+    public Vector3 newPosition;
+
+    public GameObject Background;
+    public Transform[,] grid = new Transform[100,200];
     // Start is called before the first frame update
     void Start()
     {
         NewTetromino();
+        previousTime = Time.time;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if( Time.time - previousTime > riseTime && incrementing == false){
+            incrementing = true;
+            newPosition = new Vector3(transform.position.x,transform.position.y + 1,transform.position.z);
+        }
 
+        if ( incrementing == true ){
+            transform.position += new Vector3 (0,.00002f,0);
+            Background.GetComponent<Transform>().position += new Vector3(0,.00002f,0);
+
+            if (transform.position.y == newPosition.y){
+                incrementing = false;
+                previousTime = Time.time;
+            }
+        }
     }
 
 
