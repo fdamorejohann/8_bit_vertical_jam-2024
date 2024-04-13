@@ -5,9 +5,11 @@ using UnityEngine;
 public class TetrisBlock : MonoBehaviour
 {
     private float previousTime;
-    private float fallTime = 1;
+    private float fallTime = .5f;
     public static int height = 20;
     public static int width = 10;
+
+    public Vector3 mousePosition;
 
     public MasterObject master;
 
@@ -21,6 +23,16 @@ public class TetrisBlock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // int roundedX = Mathf.RoundToInt(mousePosition.x);
+        // int roundedY = Mathf.RoundToInt(mousePosition.y);
+
+        // if (ValidMove(mousePosition.x, mousePosition.y)){
+        //     transform.position = new Vector3(roundedX,transform.position.y,transform.position.z);
+        // }
+
+
         if(Input.GetKeyDown(KeyCode.LeftArrow)){
             transform.position += new Vector3 (-1,0,0);
             if(!ValidMove()){
@@ -71,4 +83,30 @@ public class TetrisBlock : MonoBehaviour
 
         return true;
     }
+
+
+
+    // bool ValidMove(float x, float y){
+    //     foreach (Transform children in transform){
+    //         Vector3 childLocalPosition = transform.InverseTransformPoint(children.transform.position);
+
+    //         int roundedX = Mathf.RoundToInt(x + children.transform.position.x);
+    //         int roundedY = Mathf.RoundToInt(y + children.transform.position.y);
+
+    //         //int roundedX = Mathf.RoundToInt(x);
+    //         //int roundedY = Mathf.RoundToInt(y);
+
+    //         Debug.Log("checking " + roundedX + "," + roundedY);
+
+    //         if (roundedX < 0 || roundedX >= width || roundedY < 0 || roundedY >= height){
+    //             return false;
+    //         }
+    //         if (master.checkGrid(roundedX, roundedY)){
+    //             return false;
+    //         }
+    //     }
+
+    //     return true;
+    // }
+
 }

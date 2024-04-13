@@ -43,7 +43,9 @@ public class PlayerController : MonoBehaviour
 			rb.velocity = new Vector2(-speed, rb.velocity.y);
 		}
 		// Check if the player is grounded
-		if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+		//if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+		//removed up arrow to keep it just W Key for now
+		if (Input.GetKeyDown(KeyCode.W))
 		{
 			// If the player is grounded, jump, if not then DoubleJump
 			Jump();
