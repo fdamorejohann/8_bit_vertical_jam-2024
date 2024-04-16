@@ -15,9 +15,15 @@ public class PlayerController : MonoBehaviour
 	private bool hasDoubleJumped = false;
 	private Rigidbody2D rb;
 	private BoxCollider2D bc;
+
+	public MasterObject master;
+
 	// Start function
 	void Start()
 	{
+
+		master = GameObject.Find("master").GetComponent<MasterObject>();
+
 		// Get the Rigidbody2D component
 		rb = GetComponent<Rigidbody2D>();
 		// Set the gravity scale of the rigidbody
@@ -28,20 +34,23 @@ public class PlayerController : MonoBehaviour
 	// Update function
 	void Update()
 	{
-		// Add force to the rigidbody based on the player's input
-		rb.AddForce(Vector2.right * Input.GetAxis("Horizontal") * speed * acceleration);
-		// Limit the velocity of the rigidbody to the speed variable
-		if (rb.velocity.x > speed)
-		{
-			// If the velocity is greater than the speed, set the velocity to the speed
-			rb.velocity = new Vector2(speed, rb.velocity.y);
-		}
-		// Limit the velocity of the rigidbody to the negative speed variable
-		else if (rb.velocity.x < -speed)
-		{
-			// If the velocity is less than the negative speed, set the velocity to the negative speed
-			rb.velocity = new Vector2(-speed, rb.velocity.y);
-		}
+
+		rb.velocity = new Vector2 (Input.GetAxis("Horizontal") * speed * master.getInversion(), rb.velocity.y);
+
+		// // Add force to the rigidbody based on the player's input
+		// rb.AddForce(Vector2.right * Input.GetAxis("Horizontal") * speed * acceleration);
+		// // Limit the velocity of the rigidbody to the speed variable
+		// if (rb.velocity.x > speed)
+		// {
+		// 	// If the velocity is greater than the speed, set the velocity to the speed
+		// 	rb.velocity = new Vector2(speed, rb.velocity.y);
+		// }
+		// // Limit the velocity of the rigidbody to the negative speed variable
+		// else if (rb.velocity.x < -speed)
+		// {
+		// 	// If the velocity is less than the negative speed, set the velocity to the negative speed
+		// 	rb.velocity = new Vector2(-speed, rb.velocity.y);
+		// }
 		// Check if the player is grounded
 		//if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
 		//removed up arrow to keep it just W Key for now
@@ -57,16 +66,20 @@ public class PlayerController : MonoBehaviour
 		// Check if the player is grounded
 		if (IsGrounded())
 		{
-			// If the player is grounded, add force to the rigidbody
-			rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
-			// Set hasDoubleJumped to false
+
+			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed * master.getInversion());
+
+			// // If the player is grounded, add force to the rigidbody
+			// rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+			// // Set hasDoubleJumped to false
 			hasDoubleJumped = false;
 		}
 		// If the player is not grounded and has not double jumped
 		else if (!hasDoubleJumped)
 		{
+			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed * master.getInversion());
 			// Add force to the rigidbody
-			rb.AddForce(Vector2.up * doubleJumpSpeed, ForceMode2D.Impulse);
+			//rb.AddForce(Vector2.up * doubleJumpSpeed, ForceMode2D.Impulse);
 			// Set hasDoubleJumped to true
 			hasDoubleJumped = true;
 		}
@@ -74,6 +87,7 @@ public class PlayerController : MonoBehaviour
 	// Check if the player is grounded
 	bool IsGrounded()
 	{
+
 		// Shoot a raycast down from the player
 		RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.down, Vector3.down, raycastDistance);
 		// If the raycast hits anything
