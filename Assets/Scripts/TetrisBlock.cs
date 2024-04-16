@@ -14,6 +14,8 @@ public class TetrisBlock : MonoBehaviour
     public MasterObject master;
 
     public Vector3 rotationPoint;
+
+    public bool inverted;
     // Start is called before the first frame update
     void Start()
     {
@@ -73,7 +75,7 @@ public class TetrisBlock : MonoBehaviour
             int roundedX = Mathf.RoundToInt(children.transform.position.x);
             int roundedY = Mathf.RoundToInt(children.transform.position.y);
 
-            if (roundedX < 0 || roundedX >= width || roundedY < 0 || roundedY >= height){
+            if (roundedX < 0 || roundedX >= width || roundedY < 0){
                 return false;
             }
             if (master.checkGrid(roundedX, roundedY)){
