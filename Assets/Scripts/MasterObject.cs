@@ -10,8 +10,9 @@ public class MasterObject : MonoBehaviour
     public GameObject[] Tetrominoes;
 
     public float previousTime;
-    public float riseTime = 10f;
+    public float riseTime = .0002f;
 
+    public float fallTime = .25f;
     public Vector3 newPosition;
 
     public GameObject Background;
@@ -19,6 +20,7 @@ public class MasterObject : MonoBehaviour
     public GameObject Player;
 
     public GameObject deathBar;
+    public GameObject topDeathBar;
     public GameObject squarePrefab;
     public bool mapInverted = false;
 
@@ -50,6 +52,9 @@ public class MasterObject : MonoBehaviour
         secondGrid = new (Transform, bool)[rows, columns];
         NewTetromino();
         previousTime = Time.time;
+        deathBar.GetComponent<DeathBar>().riseTime = riseTime;
+        topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
+
 
     }
 
@@ -57,46 +62,31 @@ public class MasterObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (spawn == true){NewTetromino(); spawn = false;}
-
-        if (invertingMap == true){
-            if (mapInverted == true){
-                mapInverted = false;
-            }
-            else{
-                mapInverted = true;
-            }
-            InvertMap();
-            invertingMap = false;
-
-            return;
-        }
-
-       transform.position = new Vector3(transform.position.x,Mathf.RoundToInt(Player.transform.position.y + 17) , 0);
-
+        transform.position = new Vector3(transform.position.x, 19 + (Time.time - previousTime) / riseTime ,0);
     }
 
 
     public void upsideRotation(){
-
+        Debug.Log("in upside rotation, current inversion status is "+ mapInverted);
         Destroy(currentBlock);
         Player.GetComponent<Rigidbody2D>().gravityScale = Player.GetComponent<Rigidbody2D>().gravityScale * -1f;
         if (mapInverted == false){
+            Debug.Log("in upside rotation,setting to 255 "+ mapInverted);
             Background.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1); // Set to black
         }
         else{
+            Debug.Log("in upside rotation,setting to 0 "+ mapInverted);
             Background.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1); // Set to white
         }
 
         if (mapInverted == false){
-
+            Debug.Log("setting ap inverted to true "+ mapInverted);
             //cam.transform.rotation = Quaternion.Euler(0f, 0f, 0);
-
-
             Background.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1); // Set to black
             mapInverted = true;
         }
         else{
+            Debug.Log("setting ap inverted to false "+ mapInverted);
            // cam.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
             Background.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1); // Set to white
             mapInverted = false;
@@ -126,10 +116,13 @@ public class MasterObject : MonoBehaviour
         if (allowNewTetromino == false){
             return;
         }
-        GameObject New = Instantiate(Tetrominoes[UnityEngine.Random.Range(0,Tetrominoes.Length)], transform.position, Quaternion.identity);
+
+        Vector3 spawnLocation = new Vector3 (transform.position.x, Mathf.RoundToInt(transform.position.y), transform.position.z);
+        GameObject New = Instantiate(Tetrominoes[UnityEngine.Random.Range(0,Tetrominoes.Length)], spawnLocation, Quaternion.identity);
         New.GetComponent<TetrisBlock>().master = this;
         //disableChildrenCollider(New.transform);
         New.GetComponent<TetrisBlock>().inverted = false;//mapInverted;
+        New.GetComponent<TetrisBlock>().fallTime = fallTime;
 
         currentBlock = New;
 
@@ -282,7 +275,7 @@ public class MasterObject : MonoBehaviour
         foreach (Transform children in t){
             int roundedX = Mathf.RoundToInt(children.transform.position.x);
             int roundedY = Mathf.RoundToInt(children.transform.position.y);
-            Debug.Log("setting grid at " + roundedX + ", " + roundedY);
+            //Debug.Log("setting grid at " + roundedX + ", " + roundedY);
             grid[roundedX, roundedY].Item1 = children;
             grid[roundedX,roundedY].Item2 = false;
         }

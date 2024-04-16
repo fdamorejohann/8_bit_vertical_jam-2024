@@ -16,13 +16,14 @@ public class Inverter : MonoBehaviour
     {
         if (col.gameObject.tag == "Player")
         {
+            Debug.Log("INVERTTING!!");
             if (inverted == false){
                 master.upsideRotation();
                 inverted = true;
 
                 // Apply the modified center back to the collider
                 GetComponent<Collider2D>().offset = new Vector2(GetComponent<Collider2D>().offset.x,0);
-                GetComponent<Collider2D>().isTrigger = false;
+                //GetComponent<Collider2D>().isTrigger = false;
 
                 master.FillLine(Mathf.RoundToInt(transform.position.y));
             }
