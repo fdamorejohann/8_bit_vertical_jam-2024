@@ -19,21 +19,34 @@ public class DeathBar : MonoBehaviour
 
     public float startYPosition;
 
+    public int incrementor;
+
+    public float elapsedTime;
+
+    public Vector3 initialPosition;
+
+    public Vector3 targetPosition;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        incrementor = 1;
         startTime = Time.time;
         master = GameObject.Find("master").GetComponent<MasterObject>();
-        startYPosition = transform.position.y;
+        initialPosition = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
 
-
-        transform.position = new Vector3(transform.position.x, startYPosition + (Time.time - startTime) / riseTime ,0);
+        updateLocation();
+        // targetPosition = new Vector3(initialPosition.x , initialPosition.y + 1, initialPosition.z);
+        // elapsedTime += Time.deltaTime;
+        // transform.position = Vector3.Lerp(initialPosition, targetPosition, (elapsedTime / riseTime));
+        // //transform.position += new Vector3(0,1/(riseTime /incrementor), 0);
+        // // transform.position = new Vector3(transform.position.x, startYPosition + (Time.time - startTime) / (riseTime / incrementor) ,0);
 
         if (setDestruction == true){
             bottomHeight = Mathf.RoundToInt(transform.position.y);
@@ -47,6 +60,17 @@ public class DeathBar : MonoBehaviour
             }
         }
 
+    }
+
+    public void updateLocation(){
+        targetPosition = new Vector3(initialPosition.x , initialPosition.y + 1, initialPosition.z);
+        elapsedTime += Time.deltaTime;
+        transform.position = Vector3.Lerp(initialPosition, targetPosition, (elapsedTime / riseTime));
+
+        if (elapsedTime >  riseTime){
+            elapsedTime = 0;
+            initialPosition = transform.position;
+        }
     }
 
             // if (transform.position.y < Player.transform.position.y - 7){

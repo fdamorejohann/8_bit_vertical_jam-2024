@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MasterObject : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class MasterObject : MonoBehaviour
 
     public float previousTime;
     public float riseTime = .0002f;
+
+    public float score;
 
     public float fallTime = .25f;
     public Vector3 newPosition;
@@ -44,16 +47,31 @@ public class MasterObject : MonoBehaviour
 
     public GameObject cam;
 
+    public int incrementor;
+
+    public Vector3 initialPosition;
+    public Vector3 targetPosition;
+
+    public float elapsedTime;
+
+    [SerializeField] private GameObject gameOverPanel;
+
+    public float timer;
+    public bool isRKeyPressed;
     //public Tuple<Transform, bool>[,] grid = new Tuple<Transform, bool>[10, 40];
 
     void Start()
     {
+        gameOverPanel.SetActive(false);
+        score = 0;
         grid = new (Transform, bool)[rows, columns];
         secondGrid = new (Transform, bool)[rows, columns];
         NewTetromino();
         previousTime = Time.time;
         deathBar.GetComponent<DeathBar>().riseTime = riseTime;
         topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
+
+        initialPosition = transform.position;
 
 
     }
@@ -62,7 +80,70 @@ public class MasterObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(transform.position.x, 19 + (Time.time - previousTime) / riseTime ,0);
+        if (transform.position.y - Player.transform.position.y < 10){
+            incrementor = 2;
+        }
+        else{
+            incrementor = 1;
+        }
+        deathBar.GetComponent<DeathBar>().incrementor = incrementor;
+        topDeathBar.GetComponent<DeathBar>().incrementor = incrementor;
+
+        updateLocation();
+
+        if (Input.GetKeyDown(KeyCode.R))
+                {
+                    isRKeyPressed = true;
+                    timer = 0f;
+                }
+
+                if (Input.GetKey(KeyCode.R))
+                {
+                    if (isRKeyPressed)
+                    {
+                        timer += Time.deltaTime;
+                        if (timer >= 1)
+                        {
+                            // R key has been held for more than 1 second
+                            Debug.Log("R key held for more than 1 second");
+                            string currentSceneName = SceneManager.GetActiveScene().name;
+                            SceneManager.LoadScene(currentSceneName);
+                            // Do whatever you need to do here
+                        }
+                    }
+                }
+
+                if (Input.GetKeyUp(KeyCode.R))
+                {
+                    isRKeyPressed = false;
+                    timer = 0f; // Reset timer when key is released
+                }
+
+       // transform.position = new Vector3(transform.position.x, 19 + (Time.time - previousTime) / (riseTime / incrementor)  ,0);
+    }
+
+    public void updateLocation(){
+        targetPosition = new Vector3(initialPosition.x , initialPosition.y + 1, initialPosition.z);
+        elapsedTime += Time.deltaTime;
+        transform.position = Vector3.Lerp(initialPosition, targetPosition, (elapsedTime / riseTime));
+
+        if (elapsedTime >  riseTime){
+            elapsedTime = 0;
+            initialPosition = transform.position;
+        }
+    }
+
+    public void incrementScore(){
+        score += 100;
+    }
+
+    public void death(){
+        gameOverPanel.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void restart(){
+
     }
 
 
