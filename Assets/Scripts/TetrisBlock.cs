@@ -5,7 +5,7 @@ using UnityEngine;
 public class TetrisBlock : MonoBehaviour
 {
     private float previousTime;
-    private float fallTime = .5f;
+    public float fallTime = .5f;
     public static int height = 20;
     public static int width = 10;
 
