@@ -64,6 +64,15 @@ public class FallingLavaBlock : MonoBehaviour
         return true;
     }
 
-
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            Debug.Log("KILLING!");
+                master.death();
+                var collider = GetComponent<Collider2D>();
+                Destroy(collider);
+        }
+    }
 
 }

@@ -7,67 +7,40 @@ using UnityEngine.SceneManagement;
 public class MasterObject : MonoBehaviour
 {
 
-    public bool destruction = false;
     public GameObject[] Tetrominoes;
-
-    public float previousTime;
-    public float riseTime = .0002f;
-
-    public float score;
-
-    public float fallTime = .25f;
-    public Vector3 newPosition;
-
+    [SerializeField] private GameObject gameOverPanel;
     public GameObject Background;
-
     public GameObject Player;
-
     public GameObject deathBar;
     public GameObject topDeathBar;
     public GameObject squarePrefab;
+
+    public float riseTime = .0002f;
+    public float score;
+    public float fallTime = .25f;
+    public bool destruction = false;
     public bool mapInverted = false;
-
     public int bottomHeight = 0;
-    public bool invertingMap = false;
-
     public GameObject currentBlock;
-
-    public bool spawn;
-
     public int rows;
     public int columns;
-
     public bool allowNewTetromino = true;
-
-    //public Transform[,] grid = new Transform[10,40];
-    // Start is called before the first frame update
     public (Transform, bool)[,] grid; // = new (Transform, bool)[rows, columns];
-
-    public (Transform, bool)[,] secondGrid;
-
     public GameObject cam;
-
     public int incrementor;
-
     public Vector3 initialPosition;
     public Vector3 targetPosition;
-
     public float elapsedTime;
-
-    [SerializeField] private GameObject gameOverPanel;
-
     public float timer;
     public bool isRKeyPressed;
-    //public Tuple<Transform, bool>[,] grid = new Tuple<Transform, bool>[10, 40];
 
     void Start()
     {
+        Time.timeScale = 1;
         gameOverPanel.SetActive(false);
         score = 0;
         grid = new (Transform, bool)[rows, columns];
-        secondGrid = new (Transform, bool)[rows, columns];
         NewTetromino();
-        previousTime = Time.time;
         deathBar.GetComponent<DeathBar>().riseTime = riseTime;
         topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
 
@@ -80,14 +53,14 @@ public class MasterObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.y - Player.transform.position.y < 10){
-            incrementor = 2;
-        }
-        else{
-            incrementor = 1;
-        }
-        deathBar.GetComponent<DeathBar>().incrementor = incrementor;
-        topDeathBar.GetComponent<DeathBar>().incrementor = incrementor;
+        // if (transform.position.y - Player.transform.position.y < 10){
+        //     incrementor = 2;
+        // }
+        // else{
+        //     incrementor = 1;
+        // }
+        // deathBar.GetComponent<DeathBar>().incrementor = incrementor;
+        // topDeathBar.GetComponent<DeathBar>().incrementor = incrementor;
 
         updateLocation();
 
@@ -119,7 +92,6 @@ public class MasterObject : MonoBehaviour
                     timer = 0f; // Reset timer when key is released
                 }
 
-       // transform.position = new Vector3(transform.position.x, 19 + (Time.time - previousTime) / (riseTime / incrementor)  ,0);
     }
 
     public void updateLocation(){
@@ -239,72 +211,6 @@ public class MasterObject : MonoBehaviour
             children.gameObject.GetComponent<BoxCollider2D>().enabled = true;
         }
     }
-
-    // Function to invert the original 2D array
-    private void InvertArray()
-    {
-        Debug.Log("Inverting Array");
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < columns / 2; j++)
-            {
-                // Swap elements across the vertical axis
-                var temp = grid[i, j];
-                grid[i, j] = grid[i, columns - 1 - j];
-                grid[i, columns- 1 - j] = temp;
-            }
-        }
-
-    }
-
-
-    public void InvertMap(){
-       // InvertArray();
-        for (int k = 0; k < grid.GetLength(0); k++){
-            for (int l = 0; l < grid.GetLength(1); l++){
-                if (grid[k,l].Item1 != null){
-                    Debug.Log("found collider");
-                    if (mapInverted == true){
-                        disableCollider(grid[k,l].Item1);
-                    //grid[k,l].Item2 = mapInverted;
-                    Debug.Log("disabled collider");
-                    }
-                    else{
-                        Destroy(grid[k,l].Item1.gameObject);
-                        grid[k, l].Item1 = null;
-                    }
-                }
-                else{
-                    GameObject New = Instantiate(squarePrefab, new Vector3(k,l,0), Quaternion.identity);
-                    grid[k, l] = (New.transform, mapInverted);
-                    if (mapInverted == true){
-                      //  Debug.Log("setting to black...");
-                        New.GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 1); // Set to opaque black
-                    }
-                    else{
-                        New.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1); // Set to opaque black
-                    }
-                }
-            }
-        }
-        if (mapInverted == true){
-            Background.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1); // Set to black
-        }
-        else{
-            Background.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1); // Set to white
-        }
-
-        if (mapInverted == true){
-            Player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1); // Set to black
-        }
-        else{
-            Player.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1);  // Set to white
-        }
-
-       // Player.GetComponent<Rigidbody2D>().gravityScale = Player.GetComponent<Rigidbody2D>().gravityScale * -1f;
-
-    }
-
     public void DestroyGrid(Transform t){
         Debug.Log("destroying grid values");
         foreach (Transform children in t){
@@ -359,6 +265,9 @@ public class MasterObject : MonoBehaviour
             //Debug.Log("setting grid at " + roundedX + ", " + roundedY);
             grid[roundedX, roundedY].Item1 = children;
             grid[roundedX,roundedY].Item2 = false;
+            if (roundedY >= transform.position.y){
+                death();
+            }
         }
         enableCollider(t);
 

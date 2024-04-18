@@ -53,10 +53,10 @@ public class DeathBar : MonoBehaviour
             if (bottomHeight > currentHeight){
                 currentHeight = bottomHeight;
                 Debug.Log("removing line");
-                if (bottomHeight != 0){
+                if (bottomHeight > 1){
                     master.RemoveLine(bottomHeight - 1);
+                    master.RemoveLine(bottomHeight - 2);
                 }
-                master.RemoveLine(bottomHeight);
             }
         }
 
@@ -78,5 +78,17 @@ public class DeathBar : MonoBehaviour
 
             // }
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            Debug.Log("KILLING!");
+                master.death();
+                var collider = GetComponent<Collider2D>();
+                Destroy(collider);
+                // Apply the modified center back to the collider
+                //GetComponent<Collider2D>().isTrigger = false;
 
+        }
+    }
 }
