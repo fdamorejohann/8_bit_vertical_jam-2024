@@ -79,6 +79,7 @@ public class Spawner : MonoBehaviour
         if (transform.position.y / spaceBetweenInverters > LastInverter){
             Debug.Log("SPAWNING ");
             spaceBetweenInverters = spawnInverter();
+            spaceBetweenInverters = 6;
             itemsSpawned++;
             LastInverter = transform.position.y / spaceBetweenInverters  + 1;
         }

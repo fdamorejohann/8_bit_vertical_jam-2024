@@ -15,6 +15,8 @@ public class MasterObject : MonoBehaviour
     public GameObject topDeathBar;
     public GameObject squarePrefab;
 
+    public GameObject box;
+
     public float riseTime = .0002f;
     public float score;
     public float fallTime = .25f;
@@ -110,6 +112,7 @@ public class MasterObject : MonoBehaviour
     }
 
     public void death(){
+        currentBlock.GetComponent<TetrisBlock>().enabled = false;
         gameOverPanel.SetActive(true);
         Time.timeScale = 0;
     }
@@ -134,14 +137,16 @@ public class MasterObject : MonoBehaviour
 
         if (mapInverted == false){
             Debug.Log("setting ap inverted to true "+ mapInverted);
-            //cam.transform.rotation = Quaternion.Euler(0f, 0f, 0);
-            Background.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1); // Set to black
+            cam.transform.rotation = Quaternion.Euler(0f, 0f, 180);
+            box.transform.rotation = Quaternion.Euler(0f, 0f, 180);
+            Background.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1); // Set to white
             mapInverted = true;
         }
         else{
             Debug.Log("setting ap inverted to false "+ mapInverted);
-           // cam.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-            Background.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1); // Set to white
+            cam.transform.rotation = Quaternion.Euler(0f, 0f, 0);
+            box.transform.rotation = Quaternion.Euler(0f, 0f, 0);
+            Background.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1); // Set to black
             mapInverted = false;
         }
 
@@ -189,7 +194,7 @@ public class MasterObject : MonoBehaviour
     }
 
     public int getInversion(){
-        return 1;
+       // Debug.Log("map inversion is " + mapInverted);
         if(mapInverted == true){
             return -1;
         }
