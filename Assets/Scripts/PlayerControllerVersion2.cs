@@ -42,7 +42,7 @@ public class PlayerControllerVersion2 : MonoBehaviour
 		}
 		else
 		{
-			rb.velocity = new Vector2(move * speed * acceleration * master.getInversion(), rb.velocity.y);
+			rb.velocity = new Vector2(move * speed * acceleration, rb.velocity.y);
 		}
 		// if velocity > speed, set velocity to speed
 		if (rb.velocity.x > speed && move != 0)
@@ -109,6 +109,11 @@ public class PlayerControllerVersion2 : MonoBehaviour
 			// If the player is grounded, jump, if not then DoubleJump
 			Jump();
 		}
+		if (Input.GetKeyDown(KeyCode.S) && master.getInversion() == -1)
+		{
+			// If the player is grounded, jump, if not then DoubleJump
+			Jump();
+		}
 	}
 	// SnapMovement function
 	private void SnapMovement()
@@ -135,7 +140,7 @@ public class PlayerControllerVersion2 : MonoBehaviour
 		else if (!hasDoubleJumped)
 		{
 			jumpSound.Play();
-			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed * master.getInversion());
+			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed) * master.getInversion();
 			// Add force to the rigidbody
 			//rb.AddForce(Vector2.up * doubleJumpSpeed, ForceMode2D.Impulse);
 			// Set hasDoubleJumped to true
@@ -145,8 +150,12 @@ public class PlayerControllerVersion2 : MonoBehaviour
 	// Check if the player is grounded
 	bool IsGrounded()
 	{
-		// Shoot a raycast down from the player
 		RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.down, Vector3.down, raycastDistance);
+		if (master.getInversion() == -1){
+		// Shoot a raycast down from the player
+			hit = Physics2D.Raycast(transform.position + Vector3.up, Vector3.up, raycastDistance);
+		}
+
 		// If the raycast hits anything
 		if (hit.collider != null)
 		{

@@ -17,8 +17,11 @@ public class MasterObject : MonoBehaviour
     public GameObject squarePrefab;
 
     public AudioSource mainMusic;
+    public AudioSource invertedMainMusic;
     public AudioSource deathSound;
     public AudioSource gotGoldAudio;
+
+    public AudioSource inversionAudio;
 
     public GameObject box;
 
@@ -138,7 +141,15 @@ public class MasterObject : MonoBehaviour
 
         }
         Time.timeScale = 1;
+        float clipLength = mainMusic.clip.length;
+
+        // Generate a random time within the duration of the audio clip
+        float randomTime = UnityEngine.Random.Range(0f, clipLength);
+
+
         mainMusic.Play();
+        invertedMainMusic.Play();
+        invertedMainMusic.volume = 0;
     }
 
     public void updateLocation(){
@@ -185,6 +196,7 @@ public class MasterObject : MonoBehaviour
 
 
     public void upsideRotation(){
+        inversionAudio.Play();
         Debug.Log("in upside rotation, current inversion status is "+ mapInverted);
         Destroy(currentBlock);
         Player.GetComponent<Rigidbody2D>().gravityScale = Player.GetComponent<Rigidbody2D>().gravityScale * -1f;
@@ -198,6 +210,8 @@ public class MasterObject : MonoBehaviour
         }
 
         if (mapInverted == false){
+            mainMusic.volume = 0;
+            invertedMainMusic.volume = 0.05f ;
             Debug.Log("setting ap inverted to true "+ mapInverted);
             //cam.transform.rotation = Quaternion.Euler(0f, 0f, 180);
             //box.transform.rotation = Quaternion.Euler(0f, 0f, 180);
@@ -205,6 +219,8 @@ public class MasterObject : MonoBehaviour
             mapInverted = true;
         }
         else{
+            mainMusic.volume = 0.05f;
+            invertedMainMusic.volume = 0;
             Debug.Log("setting ap inverted to false "+ mapInverted);
             //cam.transform.rotation = Quaternion.Euler(0f, 0f, 0);
            // box.transform.rotation = Quaternion.Euler(0f, 0f, 0);

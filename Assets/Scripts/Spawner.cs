@@ -19,7 +19,18 @@ public class Spawner : MonoBehaviour
 
     public int itemsSpawned;
 
-    public float negativeSpawnTime;
+    public int badItemsSpawned;
+
+    private float negative_initialInterval = 10f; // Initial interval between debug logs
+    private float negative_finalInterval = 1f; // Final interval between debug logs after 1 minute
+    private float negative_timePassed = 0f; // Total time passed
+    private float negative_currentInterval; // Current interval between debug logs
+
+    private float positive_initialInterval = 10f; // Initial interval between debug logs
+    private float positive_finalInterval = 2f; // Final interval between debug logs after 1 minute
+    private float positive_timePassed = 0f; // Total time passed
+    private float positive_currentInterval; // Current interval between debug logs
+
 
     public float positiveSpawnTime;
 
@@ -41,6 +52,13 @@ public class Spawner : MonoBehaviour
     public int spaceBetweenBadSpawn;
     public int spaceBetweenGoldSpawn;
 
+    public float spawnerType;
+
+    public MasterObject master;
+
+    public bool spawnedInverter = false;
+
+
 
 
 
@@ -49,48 +67,72 @@ public class Spawner : MonoBehaviour
 
     void Start()
     {
-        negativeSpawnTime = 0;
+        master = GameObject.Find("master").GetComponent<MasterObject>();
         positiveSpawnTime = 0;
         goldSpawnTime = 0;
         LastTop = 0;
         LastBadTop = 0;
         goldTop = 0;
+        StartCoroutine(negativeInterval());
+
+        StartCoroutine(positiveInterval());
     }
 
+    IEnumerator negativeInterval()
+    {
+        while (true) // Loop indefinitely
+        {
+            yield return new WaitForSeconds(negative_currentInterval);
+            if (spawnerType == master.getInversion()){
+                spawnNegative();
+            }
+            negative_timePassed += negative_currentInterval;
+            if (negative_timePassed >= 120f) // Check if 60 seconds have passed
+            {
+                negative_timePassed = 0f; // Reset timePassed
+                negative_currentInterval = negative_initialInterval; // Reset currentInterval
+            }
+            else
+            {
+                negative_currentInterval = Mathf.Lerp(negative_initialInterval, negative_finalInterval, negative_timePassed / 60f); // Update currentInterval
+            }
+        }
+    }
+
+    IEnumerator positiveInterval()
+    {
+        while (true) // Loop indefinitely
+        {
+            yield return new WaitForSeconds(positive_currentInterval);
+            if (spawnerType == master.getInversion()){
+                spawnGoldCoin();
+            }
+            positive_timePassed += positive_currentInterval;
+            if (positive_timePassed >= 120f) // Check if 60 seconds have passed
+            {
+                positive_timePassed = 0f; // Reset timePassed
+                positive_currentInterval = positive_initialInterval; // Reset currentInterval
+            }
+            else
+            {
+                positive_currentInterval = Mathf.Lerp(positive_initialInterval, positive_finalInterval, positive_timePassed / 60f); // Update currentInterval
+            }
+        }
+    }
 
     // Update is called once per frame
     void Update()
     {
 
-        if (transform.position.y / spaceBetweenGoldSpawn > goldTop){
-            Debug.Log("SPAWNING GOLD COIN");
-            spawnGoldCoin();
-            itemsSpawned++;
-            goldTop = transform.position.y / spaceBetweenGoldSpawn + 1;
+        if (spawnerType == master.getInversion()){
+            if (!spawnedInverter){
+                spawnInverter();
+                spawnedInverter = true;
+            }
         }
-
-        if (transform.position.y / spaceBetweenGoodSpawn > LastTop){
-            Debug.Log("SPAWNING ");
-            spawnPositive();
-            itemsSpawned++;
-            LastTop = transform.position.y / spaceBetweenGoodSpawn  + 1;
+        else{
+            spawnedInverter = false;
         }
-
-        if (transform.position.y / spaceBetweenInverters > LastInverter){
-            Debug.Log("SPAWNING ");
-            spaceBetweenInverters = spawnInverter();
-            spaceBetweenInverters = 6;
-            itemsSpawned++;
-            LastInverter = transform.position.y / spaceBetweenInverters  + 1;
-        }
-
-        if (transform.position.y / spaceBetweenBadSpawn > LastBadTop){
-            Debug.Log("SPAWNING Negative");
-            spawnNegative();
-            itemsSpawned++;
-            LastBadTop = transform.position.y / spaceBetweenBadSpawn + 1;
-        }
-
 
     }
 
@@ -100,10 +142,9 @@ public class Spawner : MonoBehaviour
         GameObject New = Instantiate(positiveDrops[0], spawnLocation, Quaternion.identity);
     }
 
-    int spawnInverter(){
+    void spawnInverter(){
         Vector3 spawnLocation = new Vector3 (4.5f, Mathf.RoundToInt(transform.position.y), transform.position.z);
         GameObject New = Instantiate(inverter, spawnLocation, Quaternion.identity);
-        return UnityEngine.Random.Range(15,30);
     }
 
     void spawnPositive(){

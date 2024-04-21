@@ -8,16 +8,19 @@ public class GoldCoin : MonoBehaviour
     public MasterObject master;
 
     private float previousTime;
-    public float fallTime = .5f;
+    public float fallTime = .2f;
+
+    public float inversion;
 
     void Start(){
         previousTime = 0;
         master = GameObject.Find("master").GetComponent<MasterObject>();
+        inversion = master.getInversion();
     }
 
     void Update(){
         if (Time.time - previousTime > fallTime){
-            transform.position += new Vector3(0,-1,0);
+            transform.position += new Vector3(0,-1 * inversion,0);
             previousTime = Time.time;
         }
     }

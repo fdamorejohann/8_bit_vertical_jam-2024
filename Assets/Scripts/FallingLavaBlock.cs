@@ -27,6 +27,9 @@ public class FallingLavaBlock : MonoBehaviour
     public AudioSource fireEntering;
 
 
+    public float inversion;
+
+
 
     public bool inverted;
     // Start is called before the first frame update
@@ -34,6 +37,7 @@ public class FallingLavaBlock : MonoBehaviour
         spawnTime = Time.time;
         topofMap = GameObject.Find("TopOfMap");
         master = GameObject.Find("master").GetComponent<MasterObject>();
+        inversion = master.getInversion();
     }
 
 
@@ -52,8 +56,12 @@ public class FallingLavaBlock : MonoBehaviour
             Destroy(gameObject);
         }
 
+        if (inversion != master.getInversion()){
+            Destroy(gameObject);
+        }
+
         if (Time.time - previousTime > fallTime){
-            transform.position += new Vector3(0,-1,0);
+            transform.position += new Vector3(0,-1 * master.getInversion(),0);
             previousTime = Time.time;
             if(!ValidMove()){
                 if (!hitBlock){

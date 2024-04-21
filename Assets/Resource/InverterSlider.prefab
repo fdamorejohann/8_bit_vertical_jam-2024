@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2811599839356555282}
   - component: {fileID: 210653266126084611}
-  - component: {fileID: 847936647399971977}
   - component: {fileID: 387872912167959158}
   m_Layer: 0
-  m_Name: Inverter
-  m_TagString: Inverter
+  m_Name: InverterSlider
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,23 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &847936647399971977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8495922797825976939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b5688bbeca0a4b09917568ae540b221, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  master: {fileID: 0}
-  inverted: 0
-  fallTime: 1
-  inversion: 0
-  inversionSlider: {fileID: 0}
 --- !u!61 &387872912167959158
 BoxCollider2D:
   m_ObjectHideFlags: 0
