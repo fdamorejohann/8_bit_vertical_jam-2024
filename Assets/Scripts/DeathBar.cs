@@ -41,7 +41,9 @@ public class DeathBar : MonoBehaviour
     void Update()
     {
 
-        updateLocation();
+        if (Time.timeScale != 0){
+            updateLocation();
+        }
         // targetPosition = new Vector3(initialPosition.x , initialPosition.y + 1, initialPosition.z);
         // elapsedTime += Time.deltaTime;
         // transform.position = Vector3.Lerp(initialPosition, targetPosition, (elapsedTime / riseTime));
@@ -56,6 +58,7 @@ public class DeathBar : MonoBehaviour
                 if (bottomHeight > 1){
                     master.RemoveLine(bottomHeight - 1);
                     master.RemoveLine(bottomHeight - 2);
+                    master.FillLine(bottomHeight - 1);
                 }
             }
         }

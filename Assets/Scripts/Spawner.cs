@@ -21,15 +21,21 @@ public class Spawner : MonoBehaviour
 
     public int badItemsSpawned;
 
-    private float negative_initialInterval = 10f; // Initial interval between debug logs
-    private float negative_finalInterval = 1f; // Final interval between debug logs after 1 minute
-    private float negative_timePassed = 0f; // Total time passed
-    private float negative_currentInterval; // Current interval between debug logs
+    public float negative_initialInterval = 10f; // Initial interval between debug logs
+    public float negative_finalInterval = 2f; // Final interval between debug logs after 1 minute
+    public float negative_timePassed = 0f; // Total time passed
+    public float negative_currentInterval; // Current interval between debug logs
 
-    private float positive_initialInterval = 10f; // Initial interval between debug logs
-    private float positive_finalInterval = 2f; // Final interval between debug logs after 1 minute
-    private float positive_timePassed = 0f; // Total time passed
-    private float positive_currentInterval; // Current interval between debug logs
+    public float positive_initialInterval = 5; // Initial interval between debug logs
+    public float positive_finalInterval = 2f; // Final interval between debug logs after 1 minute
+    public float positive_timePassed = 0f; // Total time passed
+    public float positive_currentInterval; // Current interval between debug logs
+
+
+    public float inverter_initialInterval = 10f; // Initial interval between debug logs
+    public float inverter_finalInterval = 5f; // Final interval between debug logs after 1 minute
+    public float inverter_timePassed = 0f; // Total time passed
+    public float inverter_currentInterval; // Current interval between debug logs
 
 
     public float positiveSpawnTime;
@@ -76,6 +82,8 @@ public class Spawner : MonoBehaviour
         StartCoroutine(negativeInterval());
 
         StartCoroutine(positiveInterval());
+
+        StartCoroutine(inverterInterval());
     }
 
     IEnumerator negativeInterval()
@@ -87,14 +95,35 @@ public class Spawner : MonoBehaviour
                 spawnNegative();
             }
             negative_timePassed += negative_currentInterval;
-            if (negative_timePassed >= 120f) // Check if 60 seconds have passed
+            if (negative_timePassed >= 60f) // Check if 60 seconds have passed
             {
-                negative_timePassed = 0f; // Reset timePassed
-                negative_currentInterval = negative_initialInterval; // Reset currentInterval
+                negative_currentInterval = negative_finalInterval; // Reset currentInterval
             }
             else
             {
                 negative_currentInterval = Mathf.Lerp(negative_initialInterval, negative_finalInterval, negative_timePassed / 60f); // Update currentInterval
+            }
+        }
+    }
+
+    IEnumerator inverterInterval()
+    {
+        while (true) // Loop indefinitely
+        {
+            yield return new WaitForSeconds(inverter_currentInterval);
+            if (spawnerType == master.getInversion() && !spawnedInverter){
+                spawnInverter();
+                spawnedInverter = true;
+            }
+            inverter_timePassed += inverter_currentInterval;
+            if (inverter_timePassed >= 120f) // Check if 60 seconds have passed
+            {
+                inverter_timePassed = 0f; // Reset timePassed
+                inverter_currentInterval = inverter_finalInterval; // Reset currentInterval
+            }
+            else
+            {
+                inverter_currentInterval = Mathf.Lerp(inverter_initialInterval, inverter_finalInterval, inverter_timePassed / 120f); // Update currentInterval
             }
         }
     }
@@ -108,10 +137,10 @@ public class Spawner : MonoBehaviour
                 spawnGoldCoin();
             }
             positive_timePassed += positive_currentInterval;
-            if (positive_timePassed >= 120f) // Check if 60 seconds have passed
+            if (positive_timePassed >= 60f) // Check if 60 seconds have passed
             {
                 positive_timePassed = 0f; // Reset timePassed
-                positive_currentInterval = positive_initialInterval; // Reset currentInterval
+                positive_currentInterval = positive_finalInterval; // Reset currentInterval
             }
             else
             {
@@ -124,15 +153,15 @@ public class Spawner : MonoBehaviour
     void Update()
     {
 
-        if (spawnerType == master.getInversion()){
-            if (!spawnedInverter){
-                spawnInverter();
-                spawnedInverter = true;
-            }
-        }
-        else{
-            spawnedInverter = false;
-        }
+        // if (spawnerType == master.getInversion()){
+        //     if (!spawnedInverter){
+        //         spawnInverter();
+        //         spawnedInverter = true;
+        //     }
+        // }
+        // else{
+        //     spawnedInverter = false;
+        // }
 
     }
 

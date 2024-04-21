@@ -38,6 +38,18 @@ public class FallingLavaBlock : MonoBehaviour
         topofMap = GameObject.Find("TopOfMap");
         master = GameObject.Find("master").GetComponent<MasterObject>();
         inversion = master.getInversion();
+
+        // string difficulty = master.getDifficulty();
+
+        // if (difficulty == "easy"){
+        //     fallTime = 1;
+        // }
+        // if (difficulty == "medium"){
+        //     fallTime = .5f;
+        // }
+        // if (difficulty == "hard"){
+        //     fallTime = .2f;
+        // }
     }
 
 
@@ -72,7 +84,7 @@ public class FallingLavaBlock : MonoBehaviour
             }
         }
 
-        if (transform.position.y < 0){
+        if (transform.position.y < -40){
             Destroy(gameObject);
         }
 

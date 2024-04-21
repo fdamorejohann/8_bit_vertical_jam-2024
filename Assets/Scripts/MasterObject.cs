@@ -16,6 +16,8 @@ public class MasterObject : MonoBehaviour
     public GameObject topDeathBar;
     public GameObject squarePrefab;
 
+    public string difficulty;
+
     public AudioSource mainMusic;
     public AudioSource invertedMainMusic;
     public AudioSource deathSound;
@@ -60,16 +62,32 @@ public class MasterObject : MonoBehaviour
 
         StartCoroutine(CountDown());
 
+        deathBar.GetComponent<DeathBar>().riseTime = riseTime;
+        topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
 
 
         grid = new (Transform, bool)[rows, columns];
         NewTetromino();
-        deathBar.GetComponent<DeathBar>().riseTime = riseTime;
-        topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
+
 
         initialPosition = transform.position;
 
         StartCoroutine(IncreaseScoreCoroutine());
+
+        difficulty = GameObject.Find("gameSettings").GetComponent<GameSettings>().difficulty;
+
+        // if (difficulty == "easy"){
+        //     riseTime = .0002f;
+        // }
+        // if (difficulty == "medium"){
+        //     riseTime = .0003f;
+        // }
+        // if (difficulty == "hard"){
+        //     riseTime = .0004f;
+        // }
+
+        deathBar.GetComponent<DeathBar>().riseTime = riseTime;
+        topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
 
 
     }
@@ -81,6 +99,10 @@ public class MasterObject : MonoBehaviour
             yield return new WaitForSeconds(3f); // Wait for 3 seconds
             incrementScore(scoreIncrementer); // Update the score text
         }
+    }
+
+    public string getDifficulty(){
+        return difficulty;
     }
 
 

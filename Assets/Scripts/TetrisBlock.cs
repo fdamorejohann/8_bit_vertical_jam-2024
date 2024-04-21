@@ -20,6 +20,18 @@ public class TetrisBlock : MonoBehaviour
     void Start()
     {
 
+        // if (master.difficulty == "easy"){
+        //     fallTime = .8f;
+        // }
+
+        // if (master.difficulty == "medium"){
+        //     fallTime = .5f;
+        // }
+
+        // if (master.difficulty == "medium"){
+        //     fallTime = .2f;
+        // }
+
     }
 
     // Update is called once per frame

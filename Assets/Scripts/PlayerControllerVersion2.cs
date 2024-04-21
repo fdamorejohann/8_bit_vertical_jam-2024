@@ -15,6 +15,8 @@ public class PlayerControllerVersion2 : MonoBehaviour
 	public MasterObject master;
 	// Private variables
 	private bool hasDoubleJumped = false;
+
+	private bool hasTripleJumped = false;
 	private Rigidbody2D rb;
 	private BoxCollider2D bc;
 
@@ -135,9 +137,10 @@ public class PlayerControllerVersion2 : MonoBehaviour
 			// rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
 			// // Set hasDoubleJumped to false
 			hasDoubleJumped = false;
+			hasTripleJumped = false;
 		}
 		// If the player is not grounded and has not double jumped
-		else if (!hasDoubleJumped)
+		else if (!hasDoubleJumped && master.difficulty != "hard")
 		{
 			jumpSound.Play();
 			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed) * master.getInversion();
@@ -145,6 +148,15 @@ public class PlayerControllerVersion2 : MonoBehaviour
 			//rb.AddForce(Vector2.up * doubleJumpSpeed, ForceMode2D.Impulse);
 			// Set hasDoubleJumped to true
 			hasDoubleJumped = true;
+		}
+		else if (!hasTripleJumped && (master.difficulty != "medium" && master.difficulty != "hard"))
+		{
+			jumpSound.Play();
+			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed) * master.getInversion();
+			// Add force to the rigidbody
+			//rb.AddForce(Vector2.up * doubleJumpSpeed, ForceMode2D.Impulse);
+			// Set hasTripleJumped to true
+			hasTripleJumped = true;
 		}
 	}
 	// Check if the player is grounded

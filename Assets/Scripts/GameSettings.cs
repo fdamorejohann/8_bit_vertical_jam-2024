@@ -17,8 +17,9 @@ public class GameSettings : MonoBehaviour
         //SceneManager.LoadScene("8bit");
     }
 
-    void addTetromino(GameObject g){
+    public void addTetromino(GameObject g){
         playerCreatedTetrominos.Add(g);
+        g.transform.parent = transform.parent;
     }
 
 }

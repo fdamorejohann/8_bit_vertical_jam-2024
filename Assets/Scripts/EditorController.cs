@@ -1,13 +1,15 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class EditorController : MonoBehaviour
 {
 	// Variables
 	public GameObject squarePrefab; // The square prefab
 	public Transform customShapeParent; // The parent of the custom shape
 	public int blockCount = 5; // The number of blocks
+	public int maxCustomShapes = 7; // The maximum number of blocks
 	private Transform fallingSquare; // The square that is falling
 	private bool startedFalls = false; // Has it started falling
-	private float fallTime; // The timer on when it should fall 
+	private float fallTime; // The timer on when it should fall
 	void Start()
 	{
 		// Set the fall time to the current time
@@ -17,9 +19,9 @@ public class EditorController : MonoBehaviour
 	}
 	void Update()
 	{
-		// if the user presses any of the arrow keys
-		if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
-		{
+		// // if the user presses any of the arrow keys
+		// if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
+		// {
 			// If the game has not started falling
 			if (!startedFalls)
 			{
@@ -54,12 +56,12 @@ public class EditorController : MonoBehaviour
 					}
 				}
 				// If the user presses the down arrow key
-				if (Input.GetKeyDown(KeyCode.DownArrow))
+				if (Input.GetKey(KeyCode.DownArrow))
 				{
 					// reduce the fall time
-					fallTime = 0;
+					fallTime -= 0.1f;
 				}
-			}
+			// }
 		}
 		// if it should be falling
 		if (startedFalls)
@@ -73,15 +75,44 @@ public class EditorController : MonoBehaviour
 				fallingSquare.parent = customShapeParent;
 			}
 			// if block count is 0
-			else if (blockCount == 0)
+			else if (blockCount == 0 || Input.GetKeyUp(KeyCode.Return))
 			{
-				// Set the started falls to false
+				// add CustomShape to GameSettings
+				GameObject.Find("gameSettings").GetComponent<GameSettings>().addTetromino(customShapeParent.gameObject);
+				// decrement maxCustomShapes
+				maxCustomShapes--;
+				// if maxCustomShapes is 0
+				if (maxCustomShapes == 0)
+				{
+					// load the game scene
+					//UnityEngine.SceneManagement.SceneManager.LoadScene("8bit");
+				}
+				// set block count to 5
+				blockCount = 5;
+				// set startedFalls to false
 				startedFalls = false;
+				fallingSquare = null;
+
+				GameObject fakeNewShape = Instantiate(customShapeParent.gameObject, customShapeParent.position, Quaternion.identity);
+				foreach (Transform child in fakeNewShape.transform)
+				{
+					// Check if the child has a SpriteRenderer component
+					child.GetComponent<SpriteRenderer>().color = new Color(1f, 0.843f, 0f); // Set to black
+
+				}
+				// push the custom shape down
+
+				customShapeParent.position = new Vector3(10, 0, 0);
+
+				// set new custom shape parent
+				customShapeParent = new GameObject().transform;
+				// set name of new custom shape parent
+				customShapeParent.name = "CustomShape" + (5 - maxCustomShapes);
 			}
 			// if there is a falling square
-			else
+			else if (fallingSquare != null)
 			{
-				if (Time.time - fallTime > 1)
+				if (Time.time - fallTime > .002)
 				{
 					// Move the square down
 					fallingSquare.position += new Vector3(0, -1, 0);
@@ -98,6 +129,9 @@ public class EditorController : MonoBehaviour
 					// Set the fall time to the current time
 					fallTime = Time.time;
 				}
+			}
+			else if (Input.GetKeyUp(KeyCode.Return) && fallingSquare == null){
+				SceneManager.LoadScene("Menu");
 			}
 		}
 	}
