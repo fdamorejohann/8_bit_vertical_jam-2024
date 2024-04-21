@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class MasterObject : MonoBehaviour
 {
 
+    public bool dead = false;
     public GameObject[] Tetrominoes;
     [SerializeField] private GameObject gameOverPanel;
     public GameObject Background;
@@ -14,6 +15,10 @@ public class MasterObject : MonoBehaviour
     public GameObject deathBar;
     public GameObject topDeathBar;
     public GameObject squarePrefab;
+
+    public AudioSource mainMusic;
+    public AudioSource deathSound;
+    public AudioSource gotGoldAudio;
 
     public GameObject box;
 
@@ -36,11 +41,24 @@ public class MasterObject : MonoBehaviour
     public float timer;
     public bool isRKeyPressed;
 
+    public float scoreIncrementer = 10;
+
+    public float scoreIncrementerIncrementer = 10;
+
+    public scoreMaster ScoreMaster;
+
+    public GameObject[] countDowns;
+
     void Start()
     {
-        Time.timeScale = 1;
+        Time.timeScale = 0;
         gameOverPanel.SetActive(false);
         score = 0;
+
+        StartCoroutine(CountDown());
+
+
+
         grid = new (Transform, bool)[rows, columns];
         NewTetromino();
         deathBar.GetComponent<DeathBar>().riseTime = riseTime;
@@ -48,7 +66,18 @@ public class MasterObject : MonoBehaviour
 
         initialPosition = transform.position;
 
+        StartCoroutine(IncreaseScoreCoroutine());
 
+
+    }
+
+    IEnumerator IncreaseScoreCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(3f); // Wait for 3 seconds
+            incrementScore(scoreIncrementer); // Update the score text
+        }
     }
 
 
@@ -96,6 +125,22 @@ public class MasterObject : MonoBehaviour
 
     }
 
+    IEnumerator CountDown(){
+        foreach(GameObject obj in countDowns)
+        {
+            obj.SetActive(false);
+        }
+        foreach(GameObject obj in countDowns)
+        {
+            obj.SetActive(true);
+            yield return new WaitForSecondsRealtime(1f);
+            obj.SetActive(false);
+
+        }
+        Time.timeScale = 1;
+        mainMusic.Play();
+    }
+
     public void updateLocation(){
         targetPosition = new Vector3(initialPosition.x , initialPosition.y + 1, initialPosition.z);
         elapsedTime += Time.deltaTime;
@@ -107,18 +152,35 @@ public class MasterObject : MonoBehaviour
         }
     }
 
-    public void incrementScore(){
-        score += 100;
+    public void incrementIncrementor(){
+        gotGoldAudio.Play();
+        scoreIncrementer += scoreIncrementerIncrementer;
+    }
+    public void incrementScore(float n){
+        score += n;
+        ScoreMaster.presentScore((int)score);
     }
 
     public void death(){
-        currentBlock.GetComponent<TetrisBlock>().enabled = false;
-        gameOverPanel.SetActive(true);
-        Time.timeScale = 0;
+        if (!dead){
+            mainMusic.Pause();
+            deathSound.Play();
+            dead = true;
+            gameOverPanel.SetActive(true);
+            Time.timeScale = 0;
+            StartCoroutine(restart());
+        }
+
     }
 
-    public void restart(){
-
+    IEnumerator restart(){
+        Debug.Log("co routine started");
+        yield return new WaitForSecondsRealtime(2);
+        Debug.Log("timescale");
+        Time.timeScale = 1;
+        Debug.Log("loading scene");
+        SceneManager.LoadScene("Menu");
+        Debug.Log("finished loading scene");
     }
 
 
@@ -137,15 +199,15 @@ public class MasterObject : MonoBehaviour
 
         if (mapInverted == false){
             Debug.Log("setting ap inverted to true "+ mapInverted);
-            cam.transform.rotation = Quaternion.Euler(0f, 0f, 180);
-            box.transform.rotation = Quaternion.Euler(0f, 0f, 180);
+            //cam.transform.rotation = Quaternion.Euler(0f, 0f, 180);
+            //box.transform.rotation = Quaternion.Euler(0f, 0f, 180);
             Background.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1); // Set to white
             mapInverted = true;
         }
         else{
             Debug.Log("setting ap inverted to false "+ mapInverted);
-            cam.transform.rotation = Quaternion.Euler(0f, 0f, 0);
-            box.transform.rotation = Quaternion.Euler(0f, 0f, 0);
+            //cam.transform.rotation = Quaternion.Euler(0f, 0f, 0);
+           // box.transform.rotation = Quaternion.Euler(0f, 0f, 0);
             Background.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 1); // Set to black
             mapInverted = false;
         }

@@ -10,55 +10,108 @@ public class MenuWalker : MonoBehaviour
 
     public int currentSelectedOption;
 
+    public SubMenu subMenu;
+
+    public AudioSource move;
+    public AudioSource select;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        foreach(Transform child in transform) {
+            child.gameObject.SetActive(false);
+        }
+        initialize();
+    }
+
+    public void initialize(){
+
+        Debug.Log("setting to awake");
+        subMenu.gameObject.SetActive(true);
+
         currentSelectedOption = 0;
 
-        foreach (GameObject go in selectedSettings)
+        foreach (GameObject go in subMenu.selectedSettings)
         {
             go.SetActive(false);
         }
 
-        foreach (GameObject go in settings)
+        foreach (GameObject go in subMenu.settings)
         {
             go.SetActive(true);
         }
 
-        settings[currentSelectedOption].SetActive(false);
-        selectedSettings[currentSelectedOption].SetActive(true);
+        foreach (GameObject go in subMenu.descriptions){
+            go.SetActive(false);
+        }
 
+        subMenu.settings[currentSelectedOption].SetActive(false);
+        subMenu.selectedSettings[currentSelectedOption].SetActive(true);
+
+        if (subMenu.descriptions.Length > 0){
+            subMenu.descriptions[currentSelectedOption].SetActive(true);
+        }
+
+    }
+
+
+    public void loadSubMenu(GameObject g){
+        subMenu.gameObject.SetActive(false);
+        subMenu = g.GetComponent<SubMenu>();
+        initialize();
     }
 
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)){
+
+
+		if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.UpArrow)){
             if (currentSelectedOption > 0){
-                settings[currentSelectedOption].SetActive(true);
-                selectedSettings[currentSelectedOption].SetActive(false);
+                move.Play();
+                subMenu.settings[currentSelectedOption].SetActive(true);
+                subMenu.selectedSettings[currentSelectedOption].SetActive(false);
+                if (subMenu.descriptions.Length > 0){
+                    subMenu.descriptions[currentSelectedOption].SetActive(false);
+                }
                 currentSelectedOption --;
                 Debug.Log("setting option " + currentSelectedOption);
-                settings[currentSelectedOption].SetActive(false);
-                selectedSettings[currentSelectedOption].SetActive(true);
+                subMenu.settings[currentSelectedOption].SetActive(false);
+                subMenu.selectedSettings[currentSelectedOption].SetActive(true);
+                if (subMenu.descriptions.Length > 0){
+                    subMenu.descriptions[currentSelectedOption].SetActive(true);
+                }
             }
         }
 
-		if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)){
+		if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.DownArrow)){
+            move.Play();
             if (currentSelectedOption < settings.Length - 1 ){
-                settings[currentSelectedOption].SetActive(true);
-                selectedSettings[currentSelectedOption].SetActive(false);
+                subMenu.settings[currentSelectedOption].SetActive(true);
+                subMenu.selectedSettings[currentSelectedOption].SetActive(false);
+                if (subMenu.descriptions.Length > 0){
+                    subMenu.descriptions[currentSelectedOption].SetActive(false);
+                }
                 currentSelectedOption ++;
                 Debug.Log("setting option " + currentSelectedOption);
-                settings[currentSelectedOption].SetActive(false);
-                selectedSettings[currentSelectedOption].SetActive(true);
+                subMenu.settings[currentSelectedOption].SetActive(false);
+                subMenu.selectedSettings[currentSelectedOption].SetActive(true);
+                if (subMenu.descriptions.Length > 0){
+                    subMenu.descriptions[currentSelectedOption].SetActive(true);
+                }
             }
         }
 
-        if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Space)){
-            string s = selectedSettings[currentSelectedOption].GetComponent<SelectedButtonScene>().scene;
-            SceneManager.LoadScene(s);
+        if (Input.GetKeyUp(KeyCode.Return) || Input.GetKeyUp(KeyCode.Space)){
+            select.Play();
+            subMenu.selectedSettings[currentSelectedOption].GetComponent<SelectedButtonScene>().enact();
+            //string s = subMenu.selectedSettings[currentSelectedOption].GetComponent<SelectedButtonScene>().scene;
+            //SceneManager.LoadScene(s);
         }
 
     }
+
+
+
 }

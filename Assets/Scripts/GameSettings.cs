@@ -8,11 +8,13 @@ public class GameSettings : MonoBehaviour
 
     public List<GameObject> playerCreatedTetrominos = new List<GameObject>();
 
+    public string difficulty;
+
     // Start is called before the first frame update
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        SceneManager.LoadScene("8bit");
+        //SceneManager.LoadScene("8bit");
     }
 
     void addTetromino(GameObject g){

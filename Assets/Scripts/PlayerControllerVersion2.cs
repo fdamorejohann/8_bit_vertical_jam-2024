@@ -9,7 +9,7 @@ public class PlayerControllerVersion2 : MonoBehaviour
 	public float acceleration = 2f; // acceleration
 	public float jumpSpeed = 10.0f; // jumpForce multiplier
 	public float doubleJumpSpeed = 10.0f; // doubleJumpForce multiplier
-	public float raycastDistance = 0.1f; // raycast distance - for checking if the player is grounded
+	public float raycastDistance = 0.2f; // raycast distance - for checking if the player is grounded
 	public float gravity = 3.0f; // gravity
 	public float snappiness = 0.50f; // snappiness of the player's movement
 	public MasterObject master;
@@ -17,6 +17,8 @@ public class PlayerControllerVersion2 : MonoBehaviour
 	private bool hasDoubleJumped = false;
 	private Rigidbody2D rb;
 	private BoxCollider2D bc;
+
+	public AudioSource jumpSound;
 	// Start function
 	void Start()
 	{
@@ -121,7 +123,7 @@ public class PlayerControllerVersion2 : MonoBehaviour
 		// Check if the player is grounded
 		if (IsGrounded())
 		{
-
+			jumpSound.Play();
 			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed * master.getInversion());
 
 			// // If the player is grounded, add force to the rigidbody
@@ -132,6 +134,7 @@ public class PlayerControllerVersion2 : MonoBehaviour
 		// If the player is not grounded and has not double jumped
 		else if (!hasDoubleJumped)
 		{
+			jumpSound.Play();
 			rb.velocity = new Vector2 (rb.velocity.x, jumpSpeed * master.getInversion());
 			// Add force to the rigidbody
 			//rb.AddForce(Vector2.up * doubleJumpSpeed, ForceMode2D.Impulse);

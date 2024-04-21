@@ -14,12 +14,25 @@ public class FallingLavaBlock : MonoBehaviour
 
     public MasterObject master;
 
+    public GameObject topofMap;
+
     public Vector3 rotationPoint;
+
+    public bool hitBlock = false;
+
+    public bool entered = false;
+
+    public AudioSource fireHittingBlock;
+
+    public AudioSource fireEntering;
+
+
 
     public bool inverted;
     // Start is called before the first frame update
     void Start(){
         spawnTime = Time.time;
+        topofMap = GameObject.Find("TopOfMap");
         master = GameObject.Find("master").GetComponent<MasterObject>();
     }
 
@@ -27,6 +40,13 @@ public class FallingLavaBlock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (transform.position.y < topofMap.transform.position.y){
+            if (!entered){
+                entered = true;
+                fireEntering.Play();
+            }
+        }
 
         if (Time.time - spawnTime > 40){
             Destroy(gameObject);
@@ -36,6 +56,10 @@ public class FallingLavaBlock : MonoBehaviour
             transform.position += new Vector3(0,-1,0);
             previousTime = Time.time;
             if(!ValidMove()){
+                if (!hitBlock){
+                    fireHittingBlock.Play();
+                    hitBlock = true;
+                }
                 master.DestroyGrid(transform);
             }
         }

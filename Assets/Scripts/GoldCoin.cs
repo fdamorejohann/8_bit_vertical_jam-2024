@@ -27,8 +27,7 @@ public class GoldCoin : MonoBehaviour
     {
         if (col.gameObject.tag == "Player")
         {
-
-                master.incrementScore();
+                master.incrementIncrementor();
                 Destroy(gameObject);
             }
         }
