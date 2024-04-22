@@ -157,6 +157,7 @@ MonoBehaviour:
   entered: 0
   fireHittingBlock: {fileID: -1586326981159991102}
   fireEntering: {fileID: 523183730865870171}
+  inversion: 0
   inverted: 0
 --- !u!82 &-1586326981159991102
 AudioSource:
@@ -170,7 +171,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 3c0bf9bd5561c472daafad28799bcf1a, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.134
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -266,7 +267,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2a78d353b81544bb8998b5506b8934ee, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.164
   m_Pitch: 1
   Loop: 0
   Mute: 0

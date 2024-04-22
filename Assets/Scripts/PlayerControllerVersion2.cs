@@ -162,6 +162,7 @@ public class PlayerControllerVersion2 : MonoBehaviour
 	// Check if the player is grounded
 	bool IsGrounded()
 	{
+		upCast();
 		RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.down, Vector3.down, raycastDistance);
 		if (master.getInversion() == -1){
 		// Shoot a raycast down from the player
@@ -177,4 +178,11 @@ public class PlayerControllerVersion2 : MonoBehaviour
 		// If the raycast does not hit anything, return false
 		return false;
 	}
+
+	public void upCast(){
+		if (master.checkGrid(Mathf.RoundToInt(transform.position.x),Mathf.RoundToInt(transform.position.y)) && master.getInversion() != -1){
+			master.death();
+		}
+	}
+
 }

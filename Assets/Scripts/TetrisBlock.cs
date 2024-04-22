@@ -16,27 +16,20 @@ public class TetrisBlock : MonoBehaviour
     public Vector3 rotationPoint;
 
     public bool inverted;
+    public bool asleep;
     // Start is called before the first frame update
     void Start()
     {
-
-        // if (master.difficulty == "easy"){
-        //     fallTime = .8f;
-        // }
-
-        // if (master.difficulty == "medium"){
-        //     fallTime = .5f;
-        // }
-
-        // if (master.difficulty == "medium"){
-        //     fallTime = .2f;
-        // }
 
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if(asleep){
+            return;
+        }
 
         // mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         // int roundedX = Mathf.RoundToInt(mousePosition.x);

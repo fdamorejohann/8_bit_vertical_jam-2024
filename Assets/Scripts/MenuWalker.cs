@@ -46,6 +46,7 @@ public class MenuWalker : MonoBehaviour
             go.SetActive(false);
         }
 
+        Debug.Log("setting option" + currentSelectedOption);
         subMenu.settings[currentSelectedOption].SetActive(false);
         subMenu.selectedSettings[currentSelectedOption].SetActive(true);
 
@@ -86,8 +87,9 @@ public class MenuWalker : MonoBehaviour
         }
 
 		if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.DownArrow)){
+            Debug.Log("trying " + currentSelectedOption + "with length of " + settings.Length);
             move.Play();
-            if (currentSelectedOption < settings.Length - 1 ){
+            if (currentSelectedOption < subMenu.settings.Length - 1 ){
                 subMenu.settings[currentSelectedOption].SetActive(true);
                 subMenu.selectedSettings[currentSelectedOption].SetActive(false);
                 if (subMenu.descriptions.Length > 0){

@@ -39,17 +39,17 @@ public class FallingLavaBlock : MonoBehaviour
         master = GameObject.Find("master").GetComponent<MasterObject>();
         inversion = master.getInversion();
 
-        // string difficulty = master.getDifficulty();
+        string difficulty = master.getDifficulty();
 
-        // if (difficulty == "easy"){
-        //     fallTime = 1;
-        // }
-        // if (difficulty == "medium"){
-        //     fallTime = .5f;
-        // }
-        // if (difficulty == "hard"){
-        //     fallTime = .2f;
-        // }
+        if (difficulty == "easy"){
+            fallTime = .5f;
+        }
+        if (difficulty == "medium"){
+            fallTime = .2f;
+        }
+        if (difficulty == "hard"){
+            fallTime = .1f;
+        }
     }
 
 

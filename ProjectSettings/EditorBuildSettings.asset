@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
+    path: Assets/Scenes/Load.unity
+    guid: a9ef0d5e3fca24b58a45d7fd8a8f450e
+  - enabled: 1
     path: Assets/Scenes/Menu.unity
-    guid: 8b32aab1017f34585b5b59751e737e1d
-  - enabled: 0
-    path: Assets/Scenes/Menu_old.unity
     guid: 1b684342ba9ec4952b9b53727c99b518
   - enabled: 1
     path: Assets/Scenes/8bit.unity
@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: b704bdc0d2a8f480aa6f22a3ecaf3899
+  - enabled: 0
+    path: Assets/Scenes/Editor.unity
+    guid: eadd98c0ebf544248a8b9c576a12b299
+  - enabled: 0
+    path: Assets/Scenes/Menu_zoomed_out.unity
+    guid: 8b32aab1017f34585b5b59751e737e1d
   m_configObjects: {}

@@ -125,6 +125,10 @@ public class Spawner : MonoBehaviour
             {
                 inverter_currentInterval = Mathf.Lerp(inverter_initialInterval, inverter_finalInterval, inverter_timePassed / 120f); // Update currentInterval
             }
+            if (spawnerType != master.getInversion()){
+                spawnedInverter = false;
+                yield return new WaitForSeconds(1);
+            }
         }
     }
 

@@ -13,7 +13,6 @@ public class MasterObject : MonoBehaviour
     public GameObject Background;
     public GameObject Player;
     public GameObject deathBar;
-    public GameObject topDeathBar;
     public GameObject squarePrefab;
 
     public string difficulty;
@@ -57,16 +56,31 @@ public class MasterObject : MonoBehaviour
     void Start()
     {
         Time.timeScale = 0;
+        setDifficulty();
+
         gameOverPanel.SetActive(false);
         score = 0;
 
         StartCoroutine(CountDown());
 
         deathBar.GetComponent<DeathBar>().riseTime = riseTime;
-        topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
 
 
         grid = new (Transform, bool)[rows, columns];
+
+        GameObject [] newArray = new GameObject [Tetrominoes.Length + GameObject.Find("gameSettings").transform.childCount];
+        for (int i = 0; i < Tetrominoes.Length; i++)
+        {
+            newArray[i] = Tetrominoes[i];
+        }
+        int l = 0;
+        foreach (Transform child in  GameObject.Find("gameSettings").transform)
+        {
+            newArray[Tetrominoes.Length + l] = child.gameObject;
+            l += 1;
+        }
+
+        Tetrominoes = newArray;
         NewTetromino();
 
 
@@ -74,22 +88,55 @@ public class MasterObject : MonoBehaviour
 
         StartCoroutine(IncreaseScoreCoroutine());
 
+
+
+
+
+
+    }
+
+    public void setDifficulty(){
         difficulty = GameObject.Find("gameSettings").GetComponent<GameSettings>().difficulty;
 
-        // if (difficulty == "easy"){
-        //     riseTime = .0002f;
-        // }
-        // if (difficulty == "medium"){
-        //     riseTime = .0003f;
-        // }
-        // if (difficulty == "hard"){
-        //     riseTime = .0004f;
-        // }
+        if (difficulty == "easy"){
+            riseTime = 14;
+        }
+        else if (difficulty == "medium"){
+            riseTime = 8;
+        }
+        else if (difficulty == "hard"){
+            riseTime = 5;
+        }
+        else{
+            riseTime = 10;
+        }
 
-        deathBar.GetComponent<DeathBar>().riseTime = riseTime;
-        topDeathBar.GetComponent<DeathBar>().riseTime = riseTime;
+        if (difficulty == "easy"){
+            fallTime = .3f;
+        }
 
+        if (difficulty == "medium"){
+            fallTime = .2f;
+        }
 
+        if (difficulty == "hard"){
+            fallTime = .1f;
+        }
+
+        if (difficulty == "easy"){
+            scoreIncrementerIncrementer = 10;
+
+        }
+
+        if (difficulty == "medium"){
+            scoreIncrementerIncrementer = 20;
+        }
+
+        if (difficulty == "hard"){
+            scoreIncrementerIncrementer = 30;
+        }
+
+        scoreIncrementer = scoreIncrementerIncrementer;
     }
 
     IEnumerator IncreaseScoreCoroutine()
@@ -109,14 +156,7 @@ public class MasterObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // if (transform.position.y - Player.transform.position.y < 10){
-        //     incrementor = 2;
-        // }
-        // else{
-        //     incrementor = 1;
-        // }
-        // deathBar.GetComponent<DeathBar>().incrementor = incrementor;
-        // topDeathBar.GetComponent<DeathBar>().incrementor = incrementor;
+
 
         updateLocation();
 
@@ -158,7 +198,7 @@ public class MasterObject : MonoBehaviour
         foreach(GameObject obj in countDowns)
         {
             obj.SetActive(true);
-            yield return new WaitForSecondsRealtime(1f);
+            yield return new WaitForSecondsRealtime(.7f);
             obj.SetActive(false);
 
         }
@@ -281,6 +321,8 @@ public class MasterObject : MonoBehaviour
         //disableChildrenCollider(New.transform);
         New.GetComponent<TetrisBlock>().inverted = false;//mapInverted;
         New.GetComponent<TetrisBlock>().fallTime = fallTime;
+
+        New.GetComponent<TetrisBlock>().asleep = false;
 
         currentBlock = New;
 
